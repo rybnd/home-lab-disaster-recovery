@@ -1,0 +1,12 @@
+[web]
+webserver ansible_host=192.168.56.11
+
+[db]
+dbserver ansible_host=192.168.56.12
+
+[file]
+fileserver ansible_host=192.168.56.13
+
+[all:vars]
+ansible_ssh_user=ansible
+ansible_ssh_private_key_file=~/.ssh/id_rsa
