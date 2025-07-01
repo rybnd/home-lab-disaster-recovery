@@ -1,0 +1,25 @@
+---
+- name: Simulate and Test Failover
+  hosts: all
+  become: yes
+  tasks:
+    - name: Simulate failure by stopping services (web server example)
+      when: "'web' in group_names"
+      service:
+        name: nginx
+        state: stopped
+
+    - name: Simulate failure by stopping database (db server example)
+      when: "'db' in group_names"
+      service:
+        name: mysql
+        state: stopped
+
+    - name: Simulate failure by unmounting file share (file server example)
+      when: "'file' in group_names"
+      command: umount /srv/files/
+      ignore_errors: yes
+
+    - name: Wait for manual check or trigger restore
+      pause:
+        prompt: "Failure simulated. Check systems, then press ENTER to continue and restore."
