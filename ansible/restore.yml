@@ -1,0 +1,23 @@
+---
+- name: Restore Home Lab Servers
+  hosts: all
+  become: yes
+  tasks:
+    - name: Restore web server config
+      when: "'web' in group_names"
+      copy:
+        src: /backup/nginx.conf.bak
+        dest: /etc/nginx/nginx.conf
+        remote_src: yes
+
+    - name: Restore MySQL database
+      when: "'db' in group_names"
+      command: >
+        mysql -u root --password=yourpassword < /backup/all_databases.sql
+
+    - name: Restore file server data
+      when: "'file' in group_names"
+      unarchive:
+        src: /backup/files_backup.tar.gz
+        dest: /srv/files/
+        remote_src: yes
