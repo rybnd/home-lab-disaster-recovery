@@ -1,0 +1,32 @@
+---
+- name: Backup Home Lab Servers
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create backup directory
+      file:
+        path: /backup
+        state: directory
+        mode: '0755'
+
+    - name: Backup web server config (if exists)
+      when: "'web' in group_names"
+      copy:
+        src: /etc/nginx/nginx.conf
+        dest: /backup/nginx.conf.bak
+        remote_src: yes
+
+    - name: Backup database (MySQL example)
+      when: "'db' in group_names"
+      command: >
+        mysqldump --all-databases --single-transaction --quick --lock-tables=false
+        -u root --password=yourpassword
+        > /backup/all_databases.sql
+      args:
+        creates: /backup/all_databases.sql
+
+    - name: Backup file server data (example directory)
+      when: "'file' in group_names"
+      archive:
+        path: /srv/files/
+        dest: /backup/files_backup.tar.gz
