@@ -1,0 +1,8 @@
+    - name: Install all required dependencies
+       yum: 
+         name={{ items }} 
+         state=installed
+       loop:
+         - {{ item }}
+       loop_control:
+         loop_var: items
